@@ -13,12 +13,12 @@
 
 Route::get('/', function () {
     return view('welcome');
-    
+
 });
 
 // (3)
 Route::get('/XXX', 'Admin\AAAController@bbb');
-    
+
 // (4)
 Route::group(['prefix' => 'admin'], function() {
     Route::get('profile/add', 'Admin\ProfileController@add');//グループを使用する書き方
@@ -29,7 +29,7 @@ Route::group(['prefix' => 'admin'], function() {
 
 Route::group(['prefix' => 'admin'], function() {
     Route::get('news/create', 'Admin|NewsController@add');//グループを使用する書き方
-    
+
 });//Route::get('admin'/news/create', 'Adimin|NewsController@add');
 
 //Route::group('prefix' =>　'admin'],function()　{
@@ -38,7 +38,17 @@ Route::group(['prefix' => 'admin'], function() {
      Route::get('news/update', 'Admin\NewsController@update');
 });*/
 
+Route::group(['prefix' => 'admin'], function() {
+    Route::get('news/create', 'Admin\NewsController@add')->middleware('auth');
+    Route::post('news/create', 'Admin\NewsController@create')->middleware('auth');
+    Route::get('news', 'Admin\NewsController@index')->middleware('auth');
+    Route::get('news/edit', 'Admin\NewsController@edit')->middleware('auth');
+    Route::post('news/edit', 'Admin\NewsController@update')->middleware('auth');
+    Route::get('news/delete', 'Admin\NewsController@delete')->middleware('auth');
+});
 
-  Route::group(['prefix' => 'admin'], function() {
-      Route::get('news/create', 'Admin\NewsController@add');
-  });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'NewsController@index');
