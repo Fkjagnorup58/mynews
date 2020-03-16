@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 use App\News;
 use App\History;
 use Carbon\Carbon;
+use Storage;
 
 class NewsController extends Controller
 {
@@ -18,6 +18,7 @@ class NewsController extends Controller
 
   public function create(Request $request)
   {
+    return redirect('admin/news/create');
 
       $this->validate($request, News::$rules);
 
@@ -25,8 +26,8 @@ class NewsController extends Controller
       $form = $request->all();
 
       if (isset($form['image'])) {
-        $path = $request->file('image')->store('public/image');
-        $news->image_path = basename($path);
+        $path = Storage::disk('s3')->putFile('/',$form['image'],'public');
+        $news->image_path = Storage::disk('s3')->url($path);
       } else {
           $news->image_path = null;
       }
@@ -67,8 +68,8 @@ class NewsController extends Controller
       if ($request->remove == 'true') {
             $news_form['image_path'] = null;
       } elseif ($request->file('image')) {
-          $path = $request->file('image')->store('public/image');
-          $news_form['image_path'] = basename($path);
+          $path = Storage::disk('s3')->putFile('/',$form['image'],'public');
+          $news->image_path = Storage::disk('s3')->url($path);
       } else {
           $news_form['image_path'] = $news->image_path;
       }
