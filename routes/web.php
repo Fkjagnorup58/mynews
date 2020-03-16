@@ -11,43 +11,24 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
 
-});
 
 // (3)
 Route::get('/XXX', 'Admin\AAAController@bbb');
 
-// (4)
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('profile/add', 'Admin\ProfileController@add');//グループを使用する書き方
-    Route::get('profile/create', 'Admin\ProfileController@add');//グループを使用する書き方
-    Route::get('profile/edit', 'Admin\ProfileController@edit');//グループを使用する書き方
-    Route::get('profile/update', 'Admin\ProfileController@update');//グループを使用する書き方
-});
 
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('news/create', 'Admin|NewsController@add');//グループを使用する書き方
-    Route::get('profile/create', 'AdminProfileController@add');
-    Route::get('profile/edit', 'AdminProfileController@add');
-});//Route::get('admin'/news/create', 'Adimin|NewsController@add');
 
-//Route::group('prefix' =>　'admin'],function()　{
- /*Route::get('news/create', 'Admin\NewsController@add');
-     Route::get('news/delete', 'Admin\NewsController@delete');
-     Route::get('news/update', 'Admin\NewsController@update');
-});*/
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+    Route::get('news', 'Admin\NewsController@index');
+    Route::get('news/create', 'Admin\NewsController@add');
+    Route::post('news/create', 'Admin\NewsController@create');
+    Route::get('news/edit', 'Admin\NewsController@edit');
+    Route::post('news/edit', 'Admin\NewsController@update');
+    Route::get('news/delete', 'Admin\NewsController@delete');
 
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('news/create', 'Admin\NewsController@add')->middleware('auth');
-    Route::post('news/create', 'Admin\NewsController@create')->middleware('auth');
-    Route::post('profile/create', 'Admin\ProfileController@create')->middleware('auth');
-    Route::post('profile/edit', 'Admin\ProfileController@update')->middleware('auth');
-    Route::get('news', 'Admin\NewsController@index')->middleware('auth');
-    Route::get('news/edit', 'Admin\NewsController@edit')->middleware('auth');
-    Route::post('news/edit', 'Admin\NewsController@update')->middleware('auth');
-    Route::get('news/delete', 'Admin\NewsController@delete')->middleware('auth');
+    Route::get('profile/create', 'Admin\ProfileController@add');
+    Route::post('profile/create', 'Admin\ProfileController@create');
+    Route::post('profile/edit', 'Admin\ProfileController@update');
 });
 
 
